@@ -1,0 +1,21 @@
+# Minimal training profile for Docker / Hugging Face image builds (reference FHIR only).
+seed: 42
+paths:
+  fhir_dir: data/reference
+  processed_dir: data/processed
+  artifacts_dir: artifacts
+split:
+  test_size: 0.2
+  val_size: 0.15
+model:
+  n_estimators: 100
+  learning_rate: 0.05
+  max_depth: 4
+  num_leaves: 15
+  min_child_samples: 1
+  class_weight: balanced
+threshold: 0.5
+tuning:
+  enabled: false
+  calibrate: false
+  min_calibration_rows: 50

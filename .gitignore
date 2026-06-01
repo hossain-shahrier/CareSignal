@@ -12,3 +12,7 @@ artifacts/*.joblib
 artifacts/holdout.parquet
 artifacts/evaluation.json
 !artifacts/.gitkeep
+# Allow shipping the trained bundle to Hugging Face / Docker hosts
+!artifacts/model.joblib
+!artifacts/manifest.json
+!artifacts/model.joblib.b64

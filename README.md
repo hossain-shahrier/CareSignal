@@ -78,11 +78,21 @@ docker build -t caresignal .
 docker run -p 8000:8000 caresignal
 ```
 
-## Deploy (Render)
+## Deploy
+
+### Hugging Face Spaces (free, includes demo UI)
+
+See [`docs/huggingface.md`](docs/huggingface.md). Space: [beardmoose/CareSignal](https://huggingface.co/spaces/beardmoose/CareSignal).
+
+```powershell
+.\scripts\push_hf_space.ps1
+```
+
+### Render
 
 1. Push this repo to GitHub.
 2. Create a **Web Service** on [Render](https://render.com) from the Dockerfile.
-3. Set port `8000` and health check path `/health`.
+3. Set env `PORT=8000` and health check path `/health`.
 4. Add the live URL to this README.
 
 ## Project layout
