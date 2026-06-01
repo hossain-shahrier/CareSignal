@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CareSignal — Readmission Risk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Application navigation">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">CS</div>
+          <div>
+            <strong>CareSignal</strong>
+            <span>Readmission intelligence</span>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <button type="button" class="nav-item active" data-view="assess">
+            Risk assessment
+          </button>
+          <button type="button" class="nav-item" data-view="model">
+            Model &amp; performance
+          </button>
+          <button type="button" class="nav-item" data-view="guide">
+            How it works
+          </button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div id="status-pill" class="status-pill" aria-live="polite">
+            Connecting…
+          </div>
+          <a class="nav-link" href="/docs" target="_blank" rel="noopener"
+            >Developer API</a
+          >
+        </div>
+      </aside>
+
+      <div class="main-column">
+        <header class="topbar">
+          <div>
+            <h1 id="view-title">Risk assessment</h1>
+            <p id="view-subtitle">
+              Estimate 30-day inpatient readmission probability at discharge.
+            </p>
+          </div>
+          <div class="topbar-actions">
+            <button type="button" class="btn ghost" id="preset-low">
+              Load low-risk example
+            </button>
+            <button type="button" class="btn ghost" id="preset-high">
+              Load high-risk example
+            </button>
+          </div>
+        </header>
+
+        <div class="content-grid">
+          <div class="primary-panel">
+            <!-- Assessment view -->
+            <section id="view-assess" class="view-panel active">
+              <form id="predict-form" class="assessment-form">
+                <fieldset class="form-section">
+                  <legend>
+                    <span class="section-icon" aria-hidden="true">1</span>
+                    Demographics
+                  </legend>
+                  <p class="section-lead">
+                    Basic information about the patient.
+                  </p>
+
+                  <div class="field-row">
+                    <div class="field-block">
+                      <label for="age">Age at discharge</label>
+                      <p class="field-hint">
+                        How old the patient was when they left the hospital.
+                        Older age often means higher readmission risk.
+                      </p>
+                      <input
+                        id="age"
+                        type="number"
+                        name="age"
+                        min="0"
+                        max="120"
+                        value="58"
+                        required
+                      />
+                    </div>
+
+                    <div class="field-block">
+                      <label for="sex">Sex</label>
+                      <p class="field-hint">
+                        Helps the model account for health differences between
+                        groups. Pick unknown if it was not recorded.
+                      </p>
+                      <select id="sex" name="sex" required>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="unknown">Unknown</option>
+                      </select>
+                    </div>
+                  </div>
+                </fieldset>
+
+                <fieldset class="form-section">
+                  <legend>
+                    <span class="section-icon" aria-hidden="true">2</span>
+                    Index hospital stay
+                  </legend>
+                  <p class="section-lead">
+                    Information about this hospital visit.
+                  </p>
+
+                  <div class="field-row">
+                    <div class="field-block">
+                      <label for="length_of_stay_days"
+                        >Length of stay (days)</label
+                      >
+                      <p class="field-hint">
+                        How long the patient stayed in the hospital this time. This
+                        model was trained mostly on short stays from synthetic data
+                        (often about one day or less).
+                      </p>
+                      <input
+                        id="length_of_stay_days"
+                        type="number"
+                        name="length_of_stay_days"
+                        min="0"
+                        step="0.1"
+                        value="1"
+                        required
+                      />
+                    </div>
+
+                    <div class="field-block">
+                      <label for="procedure_count">Procedures this stay</label>
+                      <p class="field-hint">
+                        How many procedures were done during this stay. More
+                        procedures can mean a more complex hospital visit.
+                      </p>
+                      <input
+                        id="procedure_count"
+                        type="number"
+                        name="procedure_count"
+                        min="0"
+                        value="1"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="field-block full">
+                    <label for="condition_count">Health problems (count)</label>
+                    <p class="field-hint">
+                      How many health problems the patient had on record before
+                      discharge. More problems usually means higher risk.
+                    </p>
+                    <input
+                      id="condition_count"
+                      type="number"
+                      name="condition_count"
+                      min="0"
+                      value="4"
+                      required
+                    />
+                  </div>
+                </fieldset>
+
+                <fieldset class="form-section">
+                  <legend>
+                    <span class="section-icon" aria-hidden="true">3</span>
+                    Utilization history
+                  </legend>
+                  <p class="section-lead">
+                    Past hospital visits before this admission.
+                  </p>
+
+                  <div class="field-row">
+                    <div class="field-block">
+                      <label for="prior_admissions">Prior hospital stays</label>
+                      <p class="field-hint">
+                        How many times the patient was in the hospital before
+                        this visit. More past stays usually means higher risk.
+                      </p>
+                      <input
+                        id="prior_admissions"
+                        type="number"
+                        name="prior_admissions"
+                        min="0"
+                        value="1"
+                        required
+                      />
+                    </div>
+
+                    <div class="field-block">
+                      <label for="days_since_last_discharge"
+                        >Days since last discharge</label
+                      >
+                      <p class="field-hint">
+                        Days between their last hospital discharge and this
+                        admission. Use 0 if this is their first stay. Coming
+                        back soon raises risk.
+                      </p>
+                      <input
+                        id="days_since_last_discharge"
+                        type="number"
+                        name="days_since_last_discharge"
+                        min="0"
+                        step="0.1"
+                        value="90"
+                        required
+                      />
+                    </div>
+                  </div>
+                </fieldset>
+
+                <div class="form-footer">
+                  <p class="form-footer-note">
+                    Your entries are scored by the readmission model and shown
+                    in the panel on the right.
+                  </p>
+                  <button type="submit" class="btn primary" id="submit-btn">
+                    Run readmission risk score
+                  </button>
+                </div>
+              </form>
+            </section>
+
+            <!-- Model view -->
+            <section id="view-model" class="view-panel" hidden>
+              <div class="banner banner-neutral">
+                <strong>Production model bundle</strong>
+                <p>
+                  Metrics below come from the held-out patient test set in
+                  <code>manifest.json</code>.
+                </p>
+              </div>
+              <dl class="metrics-grid" id="model-metrics">
+                <div class="metric-card skeleton">Loading model info…</div>
+              </dl>
+              <div class="card-flat">
+                <h3>Input features (7)</h3>
+                <ul class="feature-list" id="feature-list"></ul>
+              </div>
+            </section>
+
+            <!-- Guide view -->
+            <section id="view-guide" class="view-panel" hidden>
+              <article class="guide-article">
+                <h2>End-to-end flow</h2>
+                <ol class="flow-steps">
+                  <li>
+                    <strong>FHIR bundles</strong> — Synthea (or compatible) JSON
+                    per patient with Patient, Encounter, Condition, Procedure
+                    resources.
+                  </li>
+                  <li>
+                    <strong>Feature pipeline</strong> — Each finished inpatient
+                    discharge becomes one row; label = readmit within 30 days if
+                    a new inpatient stay starts in window.
+                  </li>
+                  <li>
+                    <strong>Model</strong> — LightGBM with calibration;
+                    threshold tuned on validation for F1.
+                  </li>
+                  <li>
+                    <strong>API</strong> — This UI and
+                    <code>/predict</code> consume the same feature schema as
+                    training.
+                  </li>
+                </ol>
+
+                <h2>Understanding the score</h2>
+                <p>
+                  <strong>Risk score</strong> is a calibrated probability
+                  (0–100%) of at least one inpatient readmission within
+                  <strong>30 days</strong> after the index discharge.
+                </p>
+                <p>
+                  <strong>Predicted readmission</strong> applies the tuned
+                  decision threshold: scores at or above the threshold are
+                  flagged as elevated risk.
+                </p>
+
+                <h2>Important limitations</h2>
+                <ul>
+                  <li>
+                    Demonstration / portfolio project — not FDA-cleared or
+                    validated for care.
+                  </li>
+                  <li>
+                    Trained on synthetic Synthea populations; retrain before any
+                    real deployment.
+                  </li>
+                  <li>
+                    Does not use medications, labs, vitals, or social
+                    determinants in this version.
+                  </li>
+                </ul>
+              </article>
+            </section>
+          </div>
+
+          <aside class="results-panel" aria-label="Risk score results">
+            <div class="results-sticky">
+              <h2>Risk summary</h2>
+              <p class="results-hint">
+                Results update after each assessment run.
+              </p>
+
+              <div id="result-empty" class="result-empty">
+                <div class="result-empty-icon" aria-hidden="true">◎</div>
+                <p>
+                  Complete the form and run a score to see readmission risk
+                  here.
+                </p>
+              </div>
+
+              <div id="result-panel" class="result-body" hidden>
+                <div id="risk-badge" class="risk-badge">—</div>
+                <p class="risk-value">
+                  <span id="risk-score">—</span>
+                  <span class="risk-unit">estimated probability</span>
+                </p>
+                <div
+                  id="risk-meter"
+                  class="risk-meter"
+                  role="meter"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                >
+                  <div class="risk-bar" id="risk-bar"></div>
+                </div>
+                <p id="risk-label" class="risk-label"></p>
+                <ul class="result-facts" id="result-facts"></ul>
+                <p id="threshold-note" class="threshold-note"></p>
+              </div>
+
+              <div class="card-flat model-snippet">
+                <h3>Label definition</h3>
+                <p class="small">
+                  <strong>Readmission = 1</strong> if another finished inpatient
+                  encounter starts within 30 days after index discharge;
+                  features use only data available at or before discharge.
+                </p>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <footer class="footer">
+          <span id="model-version">CareSignal</span>
+        </footer>
+      </div>
+    </div>
+
+    <script src="/assets/app.js" type="module"></script>
+  </body>
+</html>

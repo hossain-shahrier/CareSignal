@@ -1,0 +1,59 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-readmit-yes",
+        "gender": "male",
+        "birthDate": "1965-03-10"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-1",
+        "status": "finished",
+        "class": { "code": "IMP", "display": "inpatient encounter" },
+        "subject": { "reference": "Patient/patient-readmit-yes" },
+        "period": {
+          "start": "2024-01-01T08:00:00-05:00",
+          "end": "2024-01-05T16:00:00-05:00"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-2",
+        "status": "finished",
+        "class": { "code": "IMP" },
+        "subject": { "reference": "Patient/patient-readmit-yes" },
+        "period": {
+          "start": "2024-01-15T09:00:00-05:00",
+          "end": "2024-01-18T12:00:00-05:00"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-1",
+        "subject": { "reference": "Patient/patient-readmit-yes" },
+        "onsetDateTime": "2023-12-20T00:00:00-05:00",
+        "code": { "coding": [{ "system": "http://snomed.info/sct", "code": "44054006" }] }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Procedure",
+        "id": "proc-1",
+        "status": "completed",
+        "subject": { "reference": "Patient/patient-readmit-yes" },
+        "encounter": { "reference": "Encounter/enc-1" },
+        "performedDateTime": "2024-01-02T10:00:00-05:00"
+      }
+    }
+  ]
+}

@@ -1,0 +1,338 @@
+{
+  "threshold": 0.22999999999999998,
+  "cohort_positive_rate": 0.17876712328767122,
+  "feature_importances": [
+    {
+      "feature": "num__condition_count",
+      "importance": 785.0
+    },
+    {
+      "feature": "num_log__days_since_last_discharge",
+      "importance": 596.0
+    },
+    {
+      "feature": "num__age",
+      "importance": 541.0
+    },
+    {
+      "feature": "num__prior_admissions",
+      "importance": 476.0
+    },
+    {
+      "feature": "num_log__length_of_stay_days",
+      "importance": 474.0
+    },
+    {
+      "feature": "num__procedure_count",
+      "importance": 316.0
+    },
+    {
+      "feature": "cat__sex_female",
+      "importance": 58.0
+    },
+    {
+      "feature": "cat__sex_male",
+      "importance": 17.0
+    }
+  ],
+  "test_cases": [
+    {
+      "label": "ui_preset_low",
+      "features": {
+        "age": 34,
+        "sex": "female",
+        "length_of_stay_days": 3,
+        "prior_admissions": 0,
+        "condition_count": 1,
+        "procedure_count": 0,
+        "days_since_last_discharge": 0
+      },
+      "risk_score": 0.2021,
+      "predicted_readmission": false
+    },
+    {
+      "label": "ui_preset_high",
+      "features": {
+        "age": 72,
+        "sex": "male",
+        "length_of_stay_days": 9,
+        "prior_admissions": 2,
+        "condition_count": 6,
+        "procedure_count": 2,
+        "days_since_last_discharge": 12
+      },
+      "risk_score": 0.2522,
+      "predicted_readmission": true
+    },
+    {
+      "label": "user_screenshot",
+      "features": {
+        "age": 56,
+        "sex": "male",
+        "length_of_stay_days": 7.2,
+        "prior_admissions": 2,
+        "condition_count": 9,
+        "procedure_count": 13,
+        "days_since_last_discharge": 389
+      },
+      "risk_score": 0.258,
+      "predicted_readmission": true
+    },
+    {
+      "label": "first_admission_young",
+      "features": {
+        "age": 25,
+        "sex": "female",
+        "length_of_stay_days": 2,
+        "prior_admissions": 0,
+        "condition_count": 1,
+        "procedure_count": 0,
+        "days_since_last_discharge": 0
+      },
+      "risk_score": 0.1989,
+      "predicted_readmission": false
+    },
+    {
+      "label": "frequent_flyer_recent",
+      "features": {
+        "age": 68,
+        "sex": "male",
+        "length_of_stay_days": 10,
+        "prior_admissions": 5,
+        "condition_count": 12,
+        "procedure_count": 8,
+        "days_since_last_discharge": 5
+      },
+      "risk_score": 0.2011,
+      "predicted_readmission": false
+    },
+    {
+      "label": "complex_but_long_gap",
+      "features": {
+        "age": 56,
+        "sex": "male",
+        "length_of_stay_days": 7.2,
+        "prior_admissions": 2,
+        "condition_count": 9,
+        "procedure_count": 13,
+        "days_since_last_discharge": 12
+      },
+      "risk_score": 0.2699,
+      "predicted_readmission": true
+    },
+    {
+      "label": "extreme_procedures_only",
+      "features": {
+        "age": 56,
+        "sex": "male",
+        "length_of_stay_days": 7.2,
+        "prior_admissions": 0,
+        "condition_count": 1,
+        "procedure_count": 20,
+        "days_since_last_discharge": 0
+      },
+      "risk_score": 0.2085,
+      "predicted_readmission": false
+    },
+    {
+      "label": "elderly_long_stay_no_prior",
+      "features": {
+        "age": 85,
+        "sex": "female",
+        "length_of_stay_days": 21,
+        "prior_admissions": 0,
+        "condition_count": 8,
+        "procedure_count": 4,
+        "days_since_last_discharge": 0
+      },
+      "risk_score": 0.1986,
+      "predicted_readmission": false
+    }
+  ],
+  "monotonicity_from_user_base": [
+    {
+      "field": "age",
+      "values": [
+        40,
+        56,
+        72,
+        85
+      ],
+      "scores": [
+        0.2025,
+        0.258,
+        0.2469,
+        0.2469
+      ],
+      "expected_trend": "increasing",
+      "step_violations": 0
+    },
+    {
+      "field": "prior_admissions",
+      "values": [
+        0,
+        1,
+        2,
+        5
+      ],
+      "scores": [
+        0.258,
+        0.258,
+        0.258,
+        0.2265
+      ],
+      "expected_trend": "increasing",
+      "step_violations": 1
+    },
+    {
+      "field": "condition_count",
+      "values": [
+        1,
+        4,
+        9,
+        15
+      ],
+      "scores": [
+        0.2282,
+        0.227,
+        0.258,
+        0.3357
+      ],
+      "expected_trend": "increasing",
+      "step_violations": 0
+    },
+    {
+      "field": "procedure_count",
+      "values": [
+        0,
+        2,
+        8,
+        15
+      ],
+      "scores": [
+        0.2449,
+        0.2462,
+        0.244,
+        0.2777
+      ],
+      "expected_trend": "increasing",
+      "step_violations": 0
+    },
+    {
+      "field": "length_of_stay_days",
+      "values": [
+        2,
+        5,
+        10,
+        20
+      ],
+      "scores": [
+        0.2936,
+        0.2608,
+        0.228,
+        0.2026
+      ],
+      "expected_trend": "increasing",
+      "step_violations": 3
+    },
+    {
+      "field": "days_since_last_discharge",
+      "values": [
+        5,
+        30,
+        120,
+        389
+      ],
+      "scores": [
+        0.2136,
+        0.2481,
+        0.2672,
+        0.258
+      ],
+      "expected_trend": "decreasing",
+      "step_violations": 1
+    }
+  ],
+  "holdout": {
+    "n": 254,
+    "positive_rate": 0.07480314960629922,
+    "mean_pred": 0.2678844945697586,
+    "roc_auc_proxy": 0.2852349000787665,
+    "pred_elevated_rate": 0.3228346456692913,
+    "calibration_bins": [
+      {
+        "bin_lo": 0.1,
+        "bin_hi": 0.2,
+        "n": 63,
+        "mean_pred": 0.19901027633886328,
+        "actual_rate": 0.031746031746031744
+      },
+      {
+        "bin_lo": 0.2,
+        "bin_hi": 0.30000000000000004,
+        "n": 144,
+        "mean_pred": 0.21898099567274684,
+        "actual_rate": 0.034722222222222224
+      },
+      {
+        "bin_lo": 0.30000000000000004,
+        "bin_hi": 0.4,
+        "n": 20,
+        "mean_pred": 0.3401101975099786,
+        "actual_rate": 0.25
+      },
+      {
+        "bin_lo": 0.4,
+        "bin_hi": 0.5,
+        "n": 6,
+        "mean_pred": 0.44911685920379085,
+        "actual_rate": 0.3333333333333333
+      },
+      {
+        "bin_lo": 0.5,
+        "bin_hi": 0.6000000000000001,
+        "n": 8,
+        "mean_pred": 0.5349158149875081,
+        "actual_rate": 0.125
+      },
+      {
+        "bin_lo": 0.6000000000000001,
+        "bin_hi": 0.7000000000000001,
+        "n": 2,
+        "mean_pred": 0.6442499481031041,
+        "actual_rate": 0.5
+      },
+      {
+        "bin_lo": 0.7000000000000001,
+        "bin_hi": 0.8,
+        "n": 5,
+        "mean_pred": 0.754292201779144,
+        "actual_rate": 0.0
+      },
+      {
+        "bin_lo": 0.8,
+        "bin_hi": 0.9,
+        "n": 6,
+        "mean_pred": 0.8559263840117398,
+        "actual_rate": 0.5
+      }
+    ],
+    "min_prob": 0.19850287622472926,
+    "max_prob": 0.8916859769189519
+  },
+  "cohort_percentiles_user_case": {
+    "age": 0.7006849315068493,
+    "sex": "male",
+    "length_of_stay_days": 0.8808219178082192,
+    "prior_admissions": 0.42876712328767125,
+    "condition_count": 0.19452054794520549,
+    "procedure_count": 0.923972602739726,
+    "days_since_last_discharge": 0.7212328767123287
+  },
+  "issues": [
+    "days_since_last_discharge may be weak: same patient 389d=0.258 vs 12d=0.270",
+    "Non-monotonic prior_admissions: [0.258, 0.258, 0.258, 0.2265] (expected increasing)",
+    "Non-monotonic length_of_stay_days: [0.2936, 0.2608, 0.228, 0.2026] (expected increasing)",
+    "Non-monotonic days_since_last_discharge: [0.2136, 0.2481, 0.2672, 0.258] (expected decreasing)"
+  ]
+}

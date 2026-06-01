@@ -1,0 +1,38 @@
+{
+  "version": "0.1.0",
+  "trained_at": "2026-06-01T06:34:14.480434+00:00",
+  "feature_names": [
+    "age",
+    "sex",
+    "length_of_stay_days",
+    "prior_admissions",
+    "condition_count",
+    "procedure_count",
+    "days_since_last_discharge"
+  ],
+  "metrics": {
+    "train_rows": 869,
+    "val_rows": 337,
+    "test_rows": 254,
+    "train_patients": 245,
+    "val_patients": 57,
+    "test_patients": 76,
+    "positive_rate": 0.17876712328767122,
+    "threshold": 0.22999999999999998,
+    "val_f1_at_threshold": 0.6869300911854104,
+    "model_params": {
+      "n_estimators": 200,
+      "learning_rate": 0.05,
+      "max_depth": 6,
+      "num_leaves": 31,
+      "min_child_samples": 20,
+      "class_weight": "balanced"
+    },
+    "calibrated": true,
+    "roc_auc": 0.7783874580067189,
+    "auc_pr": 0.26610453177547094,
+    "brier_score": 0.10542743515073243,
+    "accuracy": 0.7204724409448819,
+    "f1": 0.297029702970297
+  }
+}

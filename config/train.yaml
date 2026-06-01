@@ -1,0 +1,21 @@
+seed: 42
+paths:
+  fhir_dir: data/reference
+  processed_dir: data/processed
+  artifacts_dir: artifacts
+split:
+  test_size: 0.2
+  val_size: 0.15
+model:
+  n_estimators: 200
+  learning_rate: 0.05
+  max_depth: 6
+  num_leaves: 31
+  min_child_samples: 20
+  class_weight: balanced
+threshold: 0.5
+tuning:
+  enabled: true
+  calibrate: true
+  calibration_method: sigmoid
+  min_calibration_rows: 50

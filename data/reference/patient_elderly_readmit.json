@@ -1,0 +1,64 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-elderly",
+        "gender": "male",
+        "birthDate": "1948-12-30"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-1",
+        "status": "finished",
+        "class": { "code": "IMP" },
+        "subject": { "reference": "Patient/patient-elderly" },
+        "period": {
+          "start": "2024-06-10T08:00:00-04:00",
+          "end": "2024-06-20T16:00:00-04:00"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "enc-2",
+        "status": "finished",
+        "class": { "code": "IMP" },
+        "subject": { "reference": "Patient/patient-elderly" },
+        "period": {
+          "start": "2024-07-01T08:00:00-04:00",
+          "end": "2024-07-05T12:00:00-04:00"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-1",
+        "subject": { "reference": "Patient/patient-elderly" },
+        "onsetDateTime": "2020-01-01T00:00:00-05:00"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-2",
+        "subject": { "reference": "Patient/patient-elderly" },
+        "onsetDateTime": "2022-05-01T00:00:00-04:00"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "cond-3",
+        "subject": { "reference": "Patient/patient-elderly" },
+        "onsetDateTime": "2024-05-01T00:00:00-04:00"
+      }
+    }
+  ]
+}

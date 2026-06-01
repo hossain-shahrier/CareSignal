@@ -1,0 +1,20 @@
+{
+  "runID": "156ce813-21d4-4885-9abe-3e49ce2dfa87",
+  "seed": 42000,
+  "clinicianSeed": 1780293318234,
+  "referenceTime": "20240101",
+  "endTime": "20241231",
+  "version": "5e7e3e84\n",
+  "patientCount": 533,
+  "providerCount": 248,
+  "payerCount": 9,
+  "javaVersion": "17.0.18",
+  "generate.thread_pool_size": -1,
+  "generatorThreads": 8,
+  "runStartTime": "2026-06-01T05:55:18Z",
+  "runTimeInSeconds": 68,
+  "exporter.years_of_history": "10",
+  "city": "Anchorage",
+  "state": "Alaska",
+  "modules": "*"
+}
