@@ -10,15 +10,14 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from caresignal import __version__
-from caresignal.api.deps import load_model_bundle
+from caresignal.api.deps import load_model_bundle, resolve_artifacts_dir
 from caresignal.pipeline import clip_patient_features
 from caresignal.schemas import FEATURE_COLUMNS, HealthResponse, PatientFeatures, PredictionResponse
 
 logger = logging.getLogger(__name__)
-PROJECT_ROOT = Path(__file__).resolve().parents[3]
-ARTIFACTS_DIR = PROJECT_ROOT / "artifacts"
 PACKAGE_STATIC = Path(__file__).resolve().parent.parent / "static"
-ROOT_STATIC = PROJECT_ROOT / "static"
+# Repo checkout may have static/ at project root (editable install)
+ROOT_STATIC = Path.cwd() / "static"
 
 
 def _resolve_static_dir() -> Path:
@@ -32,7 +31,7 @@ STATIC_DIR = _resolve_static_dir()
 
 
 def create_app(artifacts_dir: Path | None = None) -> FastAPI:
-    bundle_dir = artifacts_dir or ARTIFACTS_DIR
+    bundle_dir = resolve_artifacts_dir(artifacts_dir)
     bundle = load_model_bundle(bundle_dir)
     threshold = float(bundle.manifest.get("metrics", {}).get("threshold", 0.5))
 

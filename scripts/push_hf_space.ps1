@@ -3,7 +3,7 @@
 #   .\scripts\push_hf_space.ps1
 #   .\scripts\push_hf_space.ps1 -SpaceRepo "beardmoose/CareSignal"
 #
-# Requires: git, and `hf auth login` OR git credentials for huggingface.co
+# Requires: git, and HF write token as git password when prompted.
 
 param(
     [string]$SpaceRepo = "beardmoose/CareSignal",
@@ -11,11 +11,26 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+$PSNativeCommandUseErrorActionPreference = $false
+
+function Invoke-Git {
+    param([string[]]$GitArgs)
+    $prevNative = $PSNativeCommandUseErrorActionPreference
+    $PSNativeCommandUseErrorActionPreference = $false
+    try {
+        $out = & git.exe @GitArgs 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            throw "git $($GitArgs -join ' ') failed: $out"
+        }
+        return $out
+    } finally {
+        $PSNativeCommandUseErrorActionPreference = $prevNative
+    }
+}
 $Root = Split-Path $PSScriptRoot -Parent
 
 $items = @(
     "pyproject.toml",
-    "README.md",
     "Dockerfile",
     ".dockerignore",
     "config",
@@ -23,15 +38,17 @@ $items = @(
     "scripts",
     "data/reference",
     "artifacts/manifest.json",
-    "artifacts/model.joblib.b64",
-    "config/train.docker.yaml"
+    "artifacts/model.joblib.b64"
 )
-# HF rejects binary model.joblib via git — ship model.joblib.b64 (text) instead.
 
 foreach ($item in $items) {
     if (-not (Test-Path (Join-Path $Root $item))) {
         throw "Missing required path for HF deploy: $item"
     }
+}
+
+if (-not (Test-Path (Join-Path $Root "config/train.docker.yaml"))) {
+    throw "Missing config/train.docker.yaml"
 }
 
 $SpaceUrl = "https://huggingface.co/spaces/$SpaceRepo"
@@ -40,15 +57,27 @@ Write-Host "Target Space: $SpaceUrl"
 if (-not (Test-Path $CloneDir)) {
     Write-Host "Cloning Space repo..."
     git clone $SpaceUrl $CloneDir
-} else {
-    Write-Host "Updating existing clone at $CloneDir"
-    Push-Location $CloneDir
-    git pull --rebase
+}
+
+Push-Location $CloneDir
+try {
+    Write-Host "Syncing clone to origin/main..."
+    Invoke-Git -GitArgs @("fetch", "origin") | Out-Null
+    Invoke-Git -GitArgs @("checkout", "main") | Out-Null
+    Invoke-Git -GitArgs @("reset", "--hard", "origin/main") | Out-Null
+} finally {
     Pop-Location
 }
 
-# Clear old app files (keep .git) — avoids nested config/config from incremental copies
+# Clear old app files (keep .git)
 Get-ChildItem $CloneDir -Force | Where-Object { $_.Name -ne ".git" } | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+
+function Copy-TreeFiltered {
+    param([string]$Source, [string]$Dest)
+    New-Item -ItemType Directory -Path $Dest -Force | Out-Null
+    robocopy $Source $Dest /E /XD __pycache__ .pytest_cache .ruff_cache .venv venv .git /XF *.pyc *.pyo /NFL /NDL /NJH /NJS /nc /ns /np | Out-Null
+    if ($LASTEXITCODE -ge 8) { throw "robocopy failed copying $Source" }
+}
 
 foreach ($item in $items) {
     $src = Join-Path $Root $item
@@ -58,28 +87,39 @@ foreach ($item in $items) {
         New-Item -ItemType Directory -Path $destParent -Force | Out-Null
     }
     if (Test-Path $src -PathType Container) {
-        Copy-Item $src $dest -Recurse -Force
+        Copy-TreeFiltered $src $dest
     } else {
         Copy-Item $src $dest -Force
     }
 }
 
-# HF Space card README (with YAML frontmatter)
+Copy-Item (Join-Path $Root "config/train.docker.yaml") (Join-Path $CloneDir "config/train.docker.yaml") -Force
 Copy-Item (Join-Path $Root "deploy\huggingface\README.md") (Join-Path $CloneDir "README.md") -Force
 
+@"
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+artifacts/*.joblib
+"@ | Set-Content (Join-Path $CloneDir ".gitignore") -Encoding utf8
+
 Push-Location $CloneDir
-git add -A
-$status = git status --porcelain
-if (-not $status) {
-    Write-Host "No changes to push."
+try {
+    Invoke-Git -GitArgs @("add", "-A") | Out-Null
+    $status = git status --porcelain
+    if (-not $status) {
+        Write-Host "No changes to push."
+        exit 0
+    }
+
+    Invoke-Git -GitArgs @("commit", "-m", "Fix artifacts path for Docker/Hugging Face") | Out-Null
+    Invoke-Git -GitArgs @("push", "origin", "main") | Out-Null
+} finally {
     Pop-Location
-    exit 0
 }
 
-git commit -m "Deploy CareSignal app with UI and model bundle"
-git push
-Pop-Location
-
 Write-Host ""
-Write-Host "Pushed. Space will build at: $SpaceUrl"
-Write-Host "Open the URL in ~2-5 minutes once the build finishes."
+Write-Host "Pushed successfully. Space will build at: $SpaceUrl"

@@ -11,6 +11,7 @@ RUN apt-get update \
 WORKDIR /app
 
 ENV PORT=7860
+ENV ARTIFACTS_DIR=/app/artifacts
 ENV PYTHONUNBUFFERED=1
 
 COPY pyproject.toml README.md ./
